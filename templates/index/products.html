@@ -1,0 +1,36 @@
+{% extends 'index/layouts/main.html' %}
+
+{% block title %}
+vishkart | Products
+{% endblock title %}
+
+{% block content %}
+
+<div class="bg-light py-4 my-5">
+    <div class="container ">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-3">{{Catagory_list}} Products</h1>
+                <hr style="border-color: black;">
+            </div>
+            {% for item in products %}
+            <div class="col-md-4 col-lg-3 text-center">
+                <div class="card my-3" style="height: 420px;">
+                    <a href="{% url 'Product_details' Catagory_list item.name %}"><img src="{{item.Product_image.url}}" class="card-img-top"  style="height: 300px;" alt="img not available">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">{{item.name}}</h5>
+                            <p class="card-text">
+                                <span class="float-start fw-bold text-danger"><s>Rs.{{item.original_price}}</s></span>
+                                <span class="float-end fw-bold text-white bg-success rounded px-1">Rs.{{item.selling_price}}</span>
+                            </p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>   
+
+{% endblock content %}

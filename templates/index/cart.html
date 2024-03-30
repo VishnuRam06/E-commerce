@@ -1,0 +1,59 @@
+{% extends 'index/layouts/main.html' %}
+
+{% block title %}
+Cart | vishkart
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="py-4 my-5" >
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-3">cart</h1>
+                <hr style="border-color: black;">
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Per unit cost</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Remove</th>
+                </tr>
+                {% for item in cart %}
+                <tr>
+                    <td><img src="{{item.product.Product_image.url}}" height="75px" alt="{{item.product.name}}"></td>
+                    <td>{{item.product.name}}</td>
+                    <td>{{item.product.selling_price | stringformat:'d'}}</td>
+                    <td>{{item.product_qty}}</td>
+                    <td class="amt">{{item.total_cost | stringformat:'d'}}</td>
+                    <td><a href="{% url 'cartremove' item.id %}" onclick="return confirm('Are you sure?To Remove')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove</a></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total</td>
+                    <td id="net">0</td>
+                    <td></td>
+                </tr>
+            </table>
+            
+            <script>
+                const nodes = document.querySelectorAll('.amt');
+                const arr = Array.from(nodes);                
+                const res = arr.reduce((acc, curr) => {                
+                return acc += Number(curr.textContent) }, 0);                
+                document.getElementById("net").innerHTML="Rs: "+res;
+            </script>
+
+            </div>
+        </div>
+    </div>  
+</div>
+  
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% extends 'index/layouts/main.html' %}
+
+{% block title %}
+Favourite| vishkart
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="py-4 my-5" >
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-3">favourite</h1>
+                <hr style="border-color: black;">
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>cost</th>
+                    <th>Remove</th>
+                </tr>
+                {% for item in favourite %}
+                <tr>
+                    <td><img src="{{item.product.Product_image.url}}" height="75px" alt="{{item.product.name}}"></td>
+                    <td>{{item.product.name}}</td>
+                    <td>{{item.product.selling_price | stringformat:'d'}}</td>
+                    <td><a href="{% url 'fav_remove' item.id %}" onclick="return confirm('Are you sure?To Remove')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            
+
+            </div>
+        </div>
+    </div>  
+</div>
+  
+{% endblock content %}

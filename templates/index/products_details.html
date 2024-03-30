@@ -1,0 +1,146 @@
+{% extends 'index/layouts/main.html' %}
+
+{% block title %}
+vishkart | Products
+{% endblock title %}
+
+{% block content %}
+
+<div class="bg-light py-4 my-5">
+    <div class="container ">
+        <div class="row ">
+            <div class="col-12">
+                <h1 class="mb-3">{{products}} Details</h1>
+                <hr style="border-color: black;">
+            </div>
+            <div class="my-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                      <li class="breadcrumb-item"><a href="{% url 'collections_Product' products.Catagory %}">Collections</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{products}}</li>
+                    </ol>
+                  </nav>
+            </div>
+            <div class="col-md-3 col-lg-4 my-3 position-relative">
+                {% if products.trending == 0 %}
+                <div class="position-absolute bg-danger text-white px-2 rounded"  style="top: 0; right: 70px;">
+                    hot
+                </div>
+                {% endif %}
+                <img src="{{products.Product_image.url}}" class="card-img-top"  style="width: 300px;" alt="img not available"> 
+            </div>
+            <div class="col-md-4 col-lg-8 my-3">
+                <h5 class="text-success text-uppercase">{{products.name}}</h5>
+                <p><b class="text-dark">Seller:</b> {{products.vendor}}</p>
+                <p>{{products.description}}</p>
+                <h6 class="my-2 text-danger"><b>Current Price:</b><s>  {{products.original_price}}</s></h6>
+                <h6 class="my-2 text-primary"><b>offer Price:</b>  {{products.selling_price}}</h6>
+                <div class="my-5">
+                    {% if products.quantity > 0 %}
+                    <input type="hidden" value="{{products.id}}" id="pid">
+                    <p>
+                        <div class="input-group" style="width:150px">
+                            <button class="input-group-text bg-success text-light" id="btnMinus" ><i class="fa fa-minus"></i></button>
+                            <input type="text" name="qty" id="txtQty" value="1" class="form-control text-center">
+                            <button class="input-group-text bg-success text-light" id="btnPlus"><i class="fa fa-plus"></i></button>
+                        </div>    
+                    </p>
+                    <button class="btn btn-primary"  id="btnCart"><i class="fa fa-shopping-cart"></i>  Add to Cart</button>
+                    {% else %}
+                    <button class="btn btn-secondary"><i class="fa fa-minus"></i>  Out of stock</button>
+                    {% endif %}
+                    <button class="btn btn-danger" id="fav"><i class="fa fa-heart"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
+<script>
+    document.addEventListener('DOMContentLoaded',function(event){
+        const btnMinus = document.getElementById("btnMinus"); //to get the btnMinus id
+        const txtQty = document.getElementById("txtQty"); //to get the txtQty id
+        const btnPlus = document.getElementById("btnPlus"); //to get the product id
+
+        const pid=document.getElementById("pid"); //to get the product id
+        const btnCart = document.getElementById("btnCart"); //for add to cart button
+
+        const fav = document.getElementById("fav"); //for favourite button
+
+
+        btnPlus.addEventListener("click", function() {
+        let qty=parseInt(txtQty.value,10);  //to change to integer
+        if(qty<10){ // to increase the product quantity when we click the + to max 10 quantity
+            qty++;
+            txtQty.value=qty;
+        }
+        });
+
+        btnMinus.addEventListener("click", function() {
+        let qty=parseInt(txtQty.value,10); //to change to integer
+        if(qty>1){ // to minus the product quantity when we click the - to min 1 quantity
+            qty--;
+            txtQty.value=qty;
+        }
+        });
+
+        btnCart.addEventListener("click", function()  {
+            let qty = parseInt(txtQty.value, 10); //to change to integer
+        if(qty>0){
+            let postobj ={
+                product_qty: qty,  //product quantity
+                pid: pid.value,  //product id
+                };
+                console.log(postobj);
+                fetch ("/addtocart", { //to send to the addtocart url 
+                method: 'POST',
+                credentials: 'same-origin', //to send api to same site
+                headers: {
+                    'Accept': 'application/json', 
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token}}', //to send it safe 
+                },
+                body: JSON.stringify(postobj)  //request to the server with the body containing the JSON representation of the postobj.
+                }).then(response => {
+                return response.json(); //This method returns another promise, which resolves with the JSON representation of the response body.
+                }).then(data => {
+                    alert(data['status']); // object and displays it in an alert dialog box. This is a common way to provide feedback or display information to the user based on the response from the server
+                })
+                .catch(error => {
+            console.error('Error:', error);  // Log any errors that occur
+        });
+        }else{
+        alert("Enter the No of quantity")
+        }
+        });
+
+        fav.addEventListener("click", function()  {
+
+            let postobj ={
+                pid: pid.value,  //product id
+                };
+                console.log(postobj);
+                fetch ("/fav", {
+                method: 'POST',
+                credentials: 'same-origin', //to send api to same site
+                headers: {
+                    'Accept': 'application/json', 
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token}}',
+                },
+                body: JSON.stringify(postobj) //request to the server with the body containing the JSON representation of the postobj.
+                }).then(response => {
+                return response.json(); //This method returns another promise, which resolves with the JSON representation of the response body.
+                }).then(data => {
+                    alert(data['status']); // object and displays it in an alert dialog box. This is a common way to provide feedback or display information to the user based on the response from the server
+                })
+                .catch(error => {
+            console.error('Error:', error);  // Log any errors that occur
+                });
+        })
+        
+        });
+
+</script>
+
+{% endblock content %}

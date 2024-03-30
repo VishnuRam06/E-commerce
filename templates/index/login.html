@@ -1,0 +1,36 @@
+{% extends 'index/layouts/main.html' %}
+
+{% block title %}
+registeration | vishkart
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="py-4 my-5" >
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-3">User Login</h1>
+                <hr style="border-color: black;">
+            </div>
+            {% include 'index/inc/message.html' %}
+            <div class="col-6">
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="username" class="form-label">Name</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter the Username">
+                    </div>
+                    <div class="mb-4">
+                        <label for="Password" class="form-label">Password</label>
+                        <input type="password" name="Password" id="Password" class="form-control" placeholder="Enter the Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>  
+</div>
+  
+{% endblock content %}
